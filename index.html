@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel POV Video Ad Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .toast-enter {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        .toast-enter-active {
+            transform: translateY(0);
+            opacity: 1;
+            transition: all 0.3s ease-out;
+        }
+        .toast-exit {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast-exit-active {
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.3s ease-in;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-hotel text-2xl"></i>
+                    <span class="font-bold text-xl tracking-tight">POV Ad Generator</span>
+                </div>
+                <div class="text-sm font-medium text-indigo-100 bg-indigo-700 px-3 py-1 rounded-full">
+                    Google Flow Ready
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left Column: Input Form -->
+        <div class="w-full lg:w-1/3 flex flex-col gap-6">
+            <div class="glass-panel shadow-lg rounded-2xl p-6">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-indigo-700">
+                    <i class="fa-solid fa-pen-to-square"></i> Maklumat Hotel
+                </h2>
+                
+                <form id="hotelForm" class="space-y-4">
+                    <!-- Hotel Name -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Nama Hotel</label>
+                        <input type="text" id="hotelName" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none" placeholder="Cth: Lexis Hibiscus" required>
+                    </div>
+
+                    <!-- Location -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Lokasi</label>
+                        <input type="text" id="hotelLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none" placeholder="Cth: Port Dickson, Negeri Sembilan" required>
+                    </div>
+
+                    <!-- Type -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Jenis Penginapan</label>
+                        <select id="hotelType" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none">
+                            <option value="Hotel">Hotel</option>
+                            <option value="Resort">Resort</option>
+                            <option value="Homestay">Homestay</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Apartment">Apartment</option>
+                        </select>
+                    </div>
+
+                    <!-- Key Features -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Kelebihan Utama (Koma dipisahkan)</label>
+                        <textarea id="hotelFeatures" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none" placeholder="Cth: Private pool, Pemandangan laut, Sarapan terapung"></textarea>
+                    </div>
+
+                    <!-- Facilities -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Kemudahan (Facilities)</label>
+                        <input type="text" id="hotelFacilities" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none" placeholder="Cth: Swimming pool, Gym, Spa">
+                    </div>
+
+                    <!-- Target Audience -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Sasaran Pelanggan</label>
+                        <input type="text" id="targetAudience" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none" placeholder="Cth: Pasangan, Keluarga">
+                    </div>
+
+                    <!-- Reference Images Upload (Optional for Context) -->
+                    <div class="border-t border-slate-200 pt-4 mt-4">
+                        <label class="block text-sm font-semibold mb-2">Gambar Rujukan (Max 2 setiap Scene)</label>
+                        <p class="text-xs text-slate-500 mb-3">Muat naik gambar untuk rujukan visual anda semasa menyalin prompt.</p>
+                        
+                        <div class="space-y-3">
+                            <!-- Scene 1: Exterior -->
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <p class="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1"><i class="fa-solid fa-image text-slate-400"></i> Scene 1: Exterior</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevExt1')">
+                                        <img id="prevExt1" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 1</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevExt2')">
+                                        <img id="prevExt2" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 2</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Scene 2: Bilik -->
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <p class="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1"><i class="fa-solid fa-bed text-slate-400"></i> Scene 2: Bilik Tidur</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevRoom1')">
+                                        <img id="prevRoom1" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 1</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevRoom2')">
+                                        <img id="prevRoom2" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 2</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Scene 3: Facilities -->
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <p class="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1"><i class="fa-solid fa-swimming-pool text-slate-400"></i> Scene 3: Facilities</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevFac1')">
+                                        <img id="prevFac1" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 1</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevFac2')">
+                                        <img id="prevFac2" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 2</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Scene 4: CTA -->
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <p class="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1"><i class="fa-solid fa-camera text-slate-400"></i> Scene 4: CTA (View)</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevCta1')">
+                                        <img id="prevCta1" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 1</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-20 bg-white rounded-md border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer hover:border-indigo-400 transition-colors">
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewImage(this, 'prevCta2')">
+                                        <img id="prevCta2" class="absolute inset-0 w-full h-full object-cover hidden z-0">
+                                        <div class="text-center group-hover:text-indigo-600 relative z-0">
+                                            <i class="fa-solid fa-plus text-slate-400 mb-1"></i>
+                                            <p class="text-[10px] font-medium text-slate-500">Gambar 2</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="generatePrompts()" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Prompts
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column: Generated Output -->
+        <div class="w-full lg:w-2/3 flex flex-col gap-4" id="outputSection" style="display: none;">
+            
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm mb-2">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fa-solid fa-circle-info text-blue-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            <strong>Cara Guna:</strong> Salin (Copy) "Image Prompt" ke dalam ChatGPT Plus/Midjourney untuk hasilkan gambar rujukan. Kemudian, salin "Google Flow Prompt" ke dalam Google Flow untuk hasilkan video POV beserta dialog audio.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene Navigation Tabs -->
+            <div class="flex space-x-1 bg-slate-200 p-1 rounded-xl overflow-x-auto">
+                <button onclick="switchTab('scene1')" id="tab-scene1" class="tab-btn flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all bg-white text-indigo-700 shadow">Scene 1: Exterior</button>
+                <button onclick="switchTab('scene2')" id="tab-scene2" class="tab-btn flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-600 hover:text-slate-800 hover:bg-slate-300">Scene 2: Bilik</button>
+                <button onclick="switchTab('scene3')" id="tab-scene3" class="tab-btn flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-600 hover:text-slate-800 hover:bg-slate-300">Scene 3: Facilities</button>
+                <button onclick="switchTab('scene4')" id="tab-scene4" class="tab-btn flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-600 hover:text-slate-800 hover:bg-slate-300">Scene 4: CTA</button>
+            </div>
+
+            <!-- Scene 1 Content -->
+            <div id="content-scene1" class="scene-content glass-panel shadow-lg rounded-2xl p-6 transition-all">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Scene 1 — Exterior Hotel (8 saat)</h3>
+                <p class="text-slate-600 text-sm mb-6">Fokus: Memperkenalkan bangunan luar hotel dan menarik perhatian penonton.</p>
+                
+                <div class="space-y-6">
+                    <!-- Script Section -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">Skrip Audio (Melayu)</span>
+                        <p id="s1-dialog" class="text-slate-700 font-medium italic mt-2">"Hai korang! Hari ni saya nak bawa korang tengok [Hotel] kat [Lokasi]. Tempat ni memang cantik sangat dari luar, jom kita masuk!"</p>
+                        <button onclick="copyText('s1-dialog')" class="absolute top-2 right-2 text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+
+                    <!-- Image Prompt Section -->
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 relative">
+                        <span class="absolute -top-3 left-4 bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded">1. ChatGPT Image Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s1-img-prompt"></div>
+                        <button onclick="copyText('s1-img-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-amber-600 hover:bg-amber-100 transition-colors tooltip" title="Copy Image Prompt">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+
+                    <!-- Google Flow Prompt Section -->
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">2. Google Flow Video Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s1-vid-prompt"></div>
+                        <button onclick="copyText('s1-vid-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-indigo-600 hover:bg-indigo-100 transition-colors tooltip" title="Copy Video Prompt">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene 2 Content -->
+            <div id="content-scene2" class="scene-content hidden glass-panel shadow-lg rounded-2xl p-6 transition-all">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Scene 2 — Bilik Tidur (8 saat)</h3>
+                <p class="text-slate-600 text-sm mb-6">Fokus: Mempamerkan keselesaan bilik, dekorasi dan suasana dari pandangan mata.</p>
+                
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">Skrip Audio (Melayu)</span>
+                        <p id="s2-dialog" class="text-slate-700 font-medium italic mt-2">"Wah, bilik dia memang luas dan selesa. Katil empuk gila, dekorasi pun kemas. Memang berbaloi untuk berehat."</p>
+                        <button onclick="copyText('s2-dialog')" class="absolute top-2 right-2 text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 relative">
+                        <span class="absolute -top-3 left-4 bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded">1. ChatGPT Image Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s2-img-prompt"></div>
+                        <button onclick="copyText('s2-img-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-amber-600 hover:bg-amber-100 transition-colors tooltip">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">2. Google Flow Video Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s2-vid-prompt"></div>
+                        <button onclick="copyText('s2-vid-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-indigo-600 hover:bg-indigo-100 transition-colors tooltip">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene 3 Content -->
+            <div id="content-scene3" class="scene-content hidden glass-panel shadow-lg rounded-2xl p-6 transition-all">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Scene 3 — Facilities Hotel (8 saat)</h3>
+                <p class="text-slate-600 text-sm mb-6">Fokus: Menarik perhatian menggunakan kemudahan utama yang disediakan.</p>
+                
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">Skrip Audio (Melayu)</span>
+                        <p id="s3-dialog" class="text-slate-700 font-medium italic mt-2">"Korang tengok la kemudahan kat sini. Memang best untuk release tension, lagi-lagi kalau datang dengan [Sasaran]."</p>
+                        <button onclick="copyText('s3-dialog')" class="absolute top-2 right-2 text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 relative">
+                        <span class="absolute -top-3 left-4 bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded">1. ChatGPT Image Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s3-img-prompt"></div>
+                        <button onclick="copyText('s3-img-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-amber-600 hover:bg-amber-100 transition-colors tooltip">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">2. Google Flow Video Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s3-vid-prompt"></div>
+                        <button onclick="copyText('s3-vid-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-indigo-600 hover:bg-indigo-100 transition-colors tooltip">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene 4 Content -->
+            <div id="content-scene4" class="scene-content hidden glass-panel shadow-lg rounded-2xl p-6 transition-all">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Scene 4 — Call To Action (8 saat)</h3>
+                <p class="text-slate-600 text-sm mb-6">Fokus: Penutup video dengan visual memukau dan CTA yang menggalakkan tempahan.</p>
+                
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">Skrip Audio (Melayu)</span>
+                        <p id="s4-dialog" class="text-slate-700 font-medium italic mt-2">"Penginapan ni memang sangat berbaloi. Kalau korang berminat, tekan link untuk tengok harga atau terus book sekarang!"</p>
+                        <button onclick="copyText('s4-dialog')" class="absolute top-2 right-2 text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 relative">
+                        <span class="absolute -top-3 left-4 bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded">1. ChatGPT Image Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s4-img-prompt"></div>
+                        <button onclick="copyText('s4-img-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-amber-600 hover:bg-amber-100 transition-colors tooltip">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 relative">
+                        <span class="absolute -top-3 left-4 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded">2. Google Flow Video Prompt</span>
+                        <div class="mt-2 text-sm text-slate-700 font-mono whitespace-pre-wrap pr-8" id="s4-vid-prompt"></div>
+                        <button onclick="copyText('s4-vid-prompt')" class="absolute top-2 right-2 p-2 bg-white rounded-lg shadow-sm text-indigo-600 hover:bg-indigo-100 transition-colors tooltip">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Custom Toast Notification -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 hidden z-50">
+        <i class="fa-solid fa-check-circle text-green-400"></i>
+        <span id="toastMessage">Copied to clipboard!</span>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Image preview logic
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            const iconContainer = input.nextElementSibling.nextElementSibling;
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    iconContainer.classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Tab Switching Logic
+        function switchTab(sceneId) {
+            // Hide all contents
+            document.querySelectorAll('.scene-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // Reset tab styles
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white', 'text-indigo-700', 'shadow');
+                el.classList.add('text-slate-600', 'hover:text-slate-800', 'hover:bg-slate-300');
+            });
+            
+            // Show selected
+            document.getElementById(`content-${sceneId}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`tab-${sceneId}`);
+            activeTab.classList.remove('text-slate-600', 'hover:text-slate-800', 'hover:bg-slate-300');
+            activeTab.classList.add('bg-white', 'text-indigo-700', 'shadow');
+        }
+
+        // Core Generation Logic
+        function generatePrompts() {
+            // 1. Get input values
+            const name = document.getElementById('hotelName').value.trim() || '[NAMA HOTEL]';
+            const location = document.getElementById('hotelLocation').value.trim() || '[LOKASI]';
+            const type = document.getElementById('hotelType').value;
+            const features = document.getElementById('hotelFeatures').value.trim() || '[KELEBIHAN]';
+            const facilities = document.getElementById('hotelFacilities').value.trim() || '[KEMUDAHAN]';
+            const target = document.getElementById('targetAudience').value.trim() || '[SASARAN]';
+
+            // Split features if available
+            const featuresList = features.split(',').map(f => f.trim()).filter(f => f);
+            const feat1 = featuresList[0] || 'reka bentuk yang memukau';
+            const feat2 = featuresList[1] || 'suasana yang tenang';
+
+            // 2. Generate Dialogues
+            const d1 = `"Hai korang! Hari ni saya nak bawa korang tengok ${name} kat ${location}. Tempat ni memang cantik sangat dari luar, jom kita masuk!"`;
+            const d2 = `"Wah, bilik dia memang luas dan selesa. Katil empuk gila, dekorasi pun kemas. Memang berbaloi untuk berehat."`;
+            const d3 = `"Korang tengok la kemudahan macam ${facilities} kat sini. Memang best untuk release tension, lagi-lagi kalau datang dengan ${target}."`;
+            const d4 = `"Penginapan dengan ${feat1} dan ${feat2} ni memang sangat berbaloi. Kalau korang berminat, tekan link untuk tengok harga atau terus book sekarang!"`;
+
+            document.getElementById('s1-dialog').innerText = d1;
+            document.getElementById('s2-dialog').innerText = d2;
+            document.getElementById('s3-dialog').innerText = d3;
+            document.getElementById('s4-dialog').innerText = d4;
+
+            // 3. Generate Image Prompts (For ChatGPT/Midjourney)
+            const commonImgRules = "Ultra-realistic cinematic vertical 9:16 photography. Natural lighting, professional hotel advertising style. First-person POV. STRICTLY NO HUMANS, no people, no models, no guests, no staff, no body parts, no human shadows.";
+            
+            document.getElementById('s1-img-prompt').innerText = `Generate an image for SCENE 1 (Exterior):\n\n${commonImgRules}\nFocus on the exterior of ${name} located in ${location}. Showcase the ${type} building architecture, main entrance, and beautiful surrounding environment. Welcoming and luxurious atmosphere.`;
+            
+            document.getElementById('s2-img-prompt').innerText = `Generate an image for SCENE 2 (Bedroom):\n\n${commonImgRules}\nFocus on a luxurious hotel bedroom interior matching the style of ${name}. Comfortable bed with neat pillows, elegant room decoration, warm lighting, cozy and clean atmosphere. POV looking into the room.`;
+            
+            document.getElementById('s3-img-prompt').innerText = `Generate an image for SCENE 3 (Facilities):\n\n${commonImgRules}\nFocus on the hotel facilities highlighting: ${facilities}. Clean, well-maintained space, bright natural or elegant artificial lighting. Inviting atmosphere.`;
+            
+            document.getElementById('s4-img-prompt').innerText = `Generate an image for SCENE 4 (CTA / Best View):\n\n${commonImgRules}\nFocus on the most breathtaking and attractive view of the property, showcasing ${feat1}. Stunning golden hour or perfect ambient lighting. Perfect for ending an advertisement. No text or logos.`;
+
+            // 4. Generate Google Flow Prompts
+            const commonFlowRules = `\n\nNEGATIVE PROMPT:\nNo people, no human characters, no models, no hotel guests, no staff, no human faces, no human bodies, no hands, no feet, no human reflections, no human shadows, no subtitles, no captions.`;
+            
+            document.getElementById('s1-vid-prompt').innerText = 
+`A. ENVIRONMENT
+Exterior of ${name} in ${location}, ${type} architecture, main entrance, beautiful surroundings.
+
+B. LIGHTING & CINEMATOGRAPHY
+Natural sunlight, inviting atmosphere, cinematic vertical 9:16 framing, first-person POV perspective.
+
+C. VISUAL ACTION
+Slow cinematic forward movement, gentle push-in towards the hotel entrance. No humans, no faces, no pedestrians.
+
+D. HOTEL DETAILS
+Ensure architecture matches a premium ${type}. Clean and welcoming.
+
+E. AUDIO & DIALOGUE
+Female voice, natural Malaysian Malay accent, relaxed and friendly tone.
+EXACT SCRIPT TO READ:
+${d1}${commonFlowRules}`;
+
+            document.getElementById('s2-vid-prompt').innerText = 
+`A. ENVIRONMENT
+Luxurious hotel bedroom interior, comfortable bed, elegant decoration, warm lighting.
+
+B. LIGHTING & CINEMATOGRAPHY
+Warm ambient lighting, cozy atmosphere, cinematic vertical 9:16 framing, first-person POV perspective.
+
+C. VISUAL ACTION
+Slow POV movement into the room, gentle pan across the bed and interior to highlight comfort. No humans, no reflections, no body parts.
+
+D. HOTEL DETAILS
+Highlight the premium bedding and neat room layout.
+
+E. AUDIO & DIALOGUE
+Female voice, natural Malaysian Malay accent, relaxed and friendly tone.
+EXACT SCRIPT TO READ:
+${d2}${commonFlowRules}`;
+
+            document.getElementById('s3-vid-prompt').innerText = 
+`A. ENVIRONMENT
+Hotel facilities featuring ${facilities}. Clean, well-maintained space.
+
+B. LIGHTING & CINEMATOGRAPHY
+Bright natural or elegant artificial lighting, cinematic vertical 9:16 framing, first-person POV perspective.
+
+C. VISUAL ACTION
+Slow cinematic pan across the facilities, gentle forward movement to showcase the amenities. No humans, no guests, no staff.
+
+D. HOTEL DETAILS
+Accurate representation of the requested facilities, looking inviting.
+
+E. AUDIO & DIALOGUE
+Female voice, natural Malaysian Malay accent, relaxed and friendly tone.
+EXACT SCRIPT TO READ:
+${d3}${commonFlowRules}`;
+
+            document.getElementById('s4-vid-prompt').innerText = 
+`A. ENVIRONMENT
+The most attractive breathtaking view of the hotel property featuring ${feat1}.
+
+B. LIGHTING & CINEMATOGRAPHY
+Golden hour or perfect ambient lighting, stunning atmosphere, cinematic vertical 9:16 framing, first-person POV perspective.
+
+C. VISUAL ACTION
+Elegant cinematic movement, slow push-in on the beautiful view. No humans, no text, no subtitles.
+
+D. HOTEL DETAILS
+Visual must be compelling enough to drive bookings.
+
+E. AUDIO & DIALOGUE
+Female voice, natural Malaysian Malay accent, relaxed and persuasive tone.
+EXACT SCRIPT TO READ:
+${d4}${commonFlowRules}`;
+
+            // 5. Show the output section
+            document.getElementById('outputSection').style.display = 'flex';
+            
+            // Scroll to output on mobile
+            if (window.innerWidth < 1024) {
+                document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Custom Copy & Toast Notification
+        function copyText(elementId) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            
+            // Modern Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast();
+                }).catch(err => {
+                    fallbackCopyTextToClipboard(textToCopy);
+                });
+            } else {
+                fallbackCopyTextToClipboard(textToCopy);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";  // Avoid scrolling to bottom
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if(successful) showToast();
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+            toast.classList.add('toast-enter-active');
+            
+            setTimeout(() => {
+                toast.classList.remove('toast-enter-active');
+                toast.classList.add('toast-exit-active');
+                
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                    toast.classList.remove('toast-exit-active');
+                }, 300); // match transition duration
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
