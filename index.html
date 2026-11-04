@@ -222,8 +222,8 @@
                         </div>
                     </div>
 
-                    <button type="button" onclick="generatePrompts()" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Prompts
+                    <button type="button" id="generateBtn" onclick="generatePrompts()" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:bg-indigo-400 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-wand-magic-sparkles" id="generateIcon"></i> <span id="generateText">Generate Prompts</span>
                     </button>
                 </form>
             </div>
@@ -423,7 +423,16 @@
         }
 
         // Core Generation Logic
-        function generatePrompts() {
+        async function generatePrompts() {
+            const btn = document.getElementById('generateBtn');
+            const btnIcon = document.getElementById('generateIcon');
+            const btnText = document.getElementById('generateText');
+            
+            // Set loading state
+            btn.disabled = true;
+            btnIcon.className = "fa-solid fa-spinner fa-spin";
+            btnText.innerText = "Generating with AI...";
+
             // 1. Get input values
             const name = document.getElementById('hotelName').value.trim() || '[NAMA HOTEL]';
             const location = document.getElementById('hotelLocation').value.trim() || '[LOKASI]';
@@ -435,13 +444,79 @@
             // Split features if available
             const featuresList = features.split(',').map(f => f.trim()).filter(f => f);
             const feat1 = featuresList[0] || 'reka bentuk yang memukau';
-            const feat2 = featuresList[1] || 'suasana yang tenang';
+            
+            // 2. Generate Dialogues using Gemini AI API
+            let d1, d2, d3, d4;
+            
+            try {
+                const apiKey = ""; // Handled by canvas automatically
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                
+                const prompt = `Anda adalah pakar penulisan skrip pengiklanan kreatif. Hasilkan 4 skrip dialog pendek (maksimum 8 saat setiap satu) dalam Bahasa Melayu yang natural, santai dan mesra untuk sebuah video iklan hotel berkonsepkan POV (Point of View) review. Suara penyampai adalah wanita.
+                Maklumat Hotel:
+                - Nama: ${name}
+                - Lokasi: ${location}
+                - Kelebihan: ${features}
+                - Kemudahan: ${facilities}
+                - Sasaran Pelanggan: ${target}
 
-            // 2. Generate Dialogues
-            const d1 = `"Hai korang! Hari ni saya nak bawa korang tengok ${name} kat ${location}. Tempat ni memang cantik sangat dari luar, jom kita masuk!"`;
-            const d2 = `"Wah, bilik dia memang luas dan selesa. Katil empuk gila, dekorasi pun kemas. Memang berbaloi untuk berehat."`;
-            const d3 = `"Korang tengok la kemudahan macam ${facilities} kat sini. Memang best untuk release tension, lagi-lagi kalau datang dengan ${target}."`;
-            const d4 = `"Penginapan dengan ${feat1} dan ${feat2} ni memang sangat berbaloi. Kalau korang berminat, tekan link untuk tengok harga atau terus book sekarang!"`;
+                Arahan Scene:
+                - Scene 1 (Exterior): Memperkenalkan hotel dan lokasi dengan teruja.
+                - Scene 2 (Bilik Tidur): Memuji keselesaan bilik dan katil.
+                - Scene 3 (Fasiliti): Mempromosikan kemudahan hotel yang dinyatakan.
+                - Scene 4 (CTA): Mengajak penonton menempah atau tengok link di bio (tanpa sebut harga spesifik).
+                
+                Jadikan skrip pelbagai dan tidak klise setiap kali dijana.`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "scene1": { "type": "STRING", "description": "Skrip untuk scene 1 berserta tanda petik pengikat kata" },
+                                "scene2": { "type": "STRING", "description": "Skrip untuk scene 2 berserta tanda petik pengikat kata" },
+                                "scene3": { "type": "STRING", "description": "Skrip untuk scene 3 berserta tanda petik pengikat kata" },
+                                "scene4": { "type": "STRING", "description": "Skrip untuk scene 4 berserta tanda petik pengikat kata" }
+                            },
+                            required: ["scene1", "scene2", "scene3", "scene4"]
+                        }
+                    }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0) {
+                    const jsonStr = result.candidates[0].content.parts[0].text;
+                    const scripts = JSON.parse(jsonStr);
+                    d1 = scripts.scene1;
+                    d2 = scripts.scene2;
+                    d3 = scripts.scene3;
+                    d4 = scripts.scene4;
+                } else {
+                    throw new Error("Invalid API Response");
+                }
+            } catch (error) {
+                console.error("AI Generation failed, using fallbacks:", error);
+                // Fallback dialogues if API fails
+                d1 = `"Hai korang! Hari ni saya nak bawa korang tengok ${name} kat ${location}. Tempat ni memang cantik sangat dari luar, jom kita masuk!"`;
+                d2 = `"Wah, bilik dia memang luas dan selesa. Katil empuk gila, dekorasi pun kemas. Memang berbaloi untuk berehat."`;
+                d3 = `"Korang tengok la kemudahan macam ${facilities} kat sini. Memang best untuk release tension, lagi-lagi kalau datang dengan ${target}."`;
+                d4 = `"Penginapan dengan ${feat1} ni memang sangat berbaloi. Kalau korang berminat, tekan link untuk terus book sekarang!"`;
+            }
+
+            // Clean quotes if double quoted
+            d1 = d1.startsWith('"') ? d1 : `"${d1}"`;
+            d2 = d2.startsWith('"') ? d2 : `"${d2}"`;
+            d3 = d3.startsWith('"') ? d3 : `"${d3}"`;
+            d4 = d4.startsWith('"') ? d4 : `"${d4}"`;
 
             document.getElementById('s1-dialog').innerText = d1;
             document.getElementById('s2-dialog').innerText = d2;
@@ -533,6 +608,11 @@ E. AUDIO & DIALOGUE
 Female voice, natural Malaysian Malay accent, relaxed and persuasive tone.
 EXACT SCRIPT TO READ:
 ${d4}${commonFlowRules}`;
+
+            // Reset loading state
+            btn.disabled = false;
+            btnIcon.className = "fa-solid fa-wand-magic-sparkles";
+            btnText.innerText = "Generate Prompts";
 
             // 5. Show the output section
             document.getElementById('outputSection').style.display = 'flex';
